@@ -1,8 +1,8 @@
 const bcrypt = require('bcrypt')
 const uuid = require('uuid')
 
-const UserModel = require('../models/user.model')
-const TokenModel = require('../models/token.model')
+const UserModel = require('../models/user-model')
+const TokenModel = require('../models/token-model')
 
 const mailService = require('./mail-service')
 const tokenService = require('./token-service')
