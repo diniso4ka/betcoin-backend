@@ -15,7 +15,8 @@ class BlogController {
 
     async getOnePost(req, res, next){
         try{
-            const {postId, userId} = req.body
+            const {userId} = req.body
+            const postId = req.params.postId
             const post = await blogService.getOne(postId, userId)
 
             return res.json(post)
@@ -27,6 +28,7 @@ class BlogController {
     async createPost(req, res, next){
         try{
             const {title, subtitle, user, img, tags, text} = req.body
+
             const post = await blogService.createPost(title, subtitle, user, img, tags, text)
 
             return res.json(post)
@@ -53,7 +55,12 @@ class BlogController {
 
     async likePost(req, res, next){
         try{
+            const {userId} = req.body
+            const postId = req.params.postId
+            await blogService.getOne(postId, userId)
+            const post = await blogService.likePost(userId,postId)
 
+            return res.json(post)
         } catch (err){
             next(err)
         }

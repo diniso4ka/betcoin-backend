@@ -1,7 +1,7 @@
 const {Schema, model} = require('mongoose')
 
 const PostSchema = new Schema({
-    title: {type: String, required: true },
+    title: {type: String, required: true, unique: true },
     subtitle: {type: String, required: true},
     user: {type: Schema.Types.ObjectId, ref: 'User', required: true},
     img: {type: String},

@@ -18,8 +18,8 @@ router.get('/blog/:postId',blogController.getOnePost)
 router.post('/blog/create',blogController.createPost)
 router.delete('/blog/:postId',blogController.deletePost)
 router.patch('/blog/:postId/update',blogController.updatePost)
-router.patch('/blog/:postId',blogController.reportPost)
-router.patch('/blog/:postId',blogController.likePost)
+router.patch('/blog/report/:postId',blogController.reportPost)
+router.patch('/blog/like/:postId',blogController.likePost)
 
 
 module.exports= router
