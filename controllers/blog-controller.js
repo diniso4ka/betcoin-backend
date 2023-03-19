@@ -1,6 +1,5 @@
 const blogService = require('../service/blog-service')
-const {body} = require("express-validator");
-const {Schema} = require("mongoose");
+
 
 class BlogController {
     async getAllPosts(req, res, next){
@@ -15,6 +14,7 @@ class BlogController {
 
     async getOnePost(req, res, next){
         try{
+            console.log(req.user)
             const {userId} = req.body
             const postId = req.params.postId
             const post = await blogService.getOne(postId, userId)

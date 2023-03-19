@@ -1,5 +1,6 @@
 const PostModel = require('../models/post-model')
 const UserModel = require('../models/user-model')
+const PostDto = require('../dtos/post-dto')
 const ApiError = require('../exceptions/api-error')
 
 
@@ -28,7 +29,7 @@ class BlogService {
     async getOne(postId, userId){
         const post = await PostModel.findOne({_id: postId})
         if(!post){
-            throw ApiError.BadRequest('Не удалось вернуть пост')
+            throw ApiError.BadRequest('Пост не найден')
         }
         const hasView = await post.wasRead.find((id)=> id=== userId)
 
@@ -115,6 +116,11 @@ class BlogService {
         return {postId ,likes: likesCount, isLiked: true}
 
 
+    }
+
+    async getPostFromDb(postId){
+        const post = await PostModel.findOne({_id:postId})
+        return new PostDto(post)
     }
 
 

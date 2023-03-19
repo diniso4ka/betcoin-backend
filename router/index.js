@@ -1,6 +1,11 @@
 const Router = require('express').Router
+
 const userController = require('../controllers/user-controller')
 const blogController = require('../controllers/blog-controller')
+
+const authMiddleware = require('../middlewares/auth-middleware')
+const authorMiddleware = require('../middlewares/author-middleware')
+
 const router = new Router()
 
 // Авторизация
@@ -14,12 +19,12 @@ router.get('/users',userController.getUsers)
 
 // Блог
 router.get('/blog/posts',blogController.getAllPosts)
-router.get('/blog/:postId',blogController.getOnePost)
-router.post('/blog/create',blogController.createPost)
-router.delete('/blog/:postId',blogController.deletePost)
-router.patch('/blog/:postId/update',blogController.updatePost)
-router.patch('/blog/report/:postId',blogController.reportPost)
-router.patch('/blog/like/:postId',blogController.likePost)
+router.get('/blog/:postId', authMiddleware,authorMiddleware, blogController.getOnePost)
+router.post('/blog/create', authMiddleware, blogController.createPost)
+router.delete('/blog/:postId', authMiddleware, authorMiddleware, blogController.deletePost)
+router.patch('/blog/:postId/update', authMiddleware, authorMiddleware, blogController.updatePost)
+router.patch('/blog/report/:postId', authMiddleware, blogController.reportPost)
+router.patch('/blog/like/:postId', authMiddleware, blogController.likePost)
 
 
 module.exports= router
