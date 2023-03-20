@@ -13,14 +13,14 @@ class BlogService {
         return postsData
     }
 
-    async createPost(title, subtitle, user, img, tags, text){
+    async createPost(title, subtitle, img, tags, text, userId){
         const doc = new PostModel({
             title,
             subtitle,
             text,
             tags,
             img,
-            user
+            user: userId
         })
         const post = await doc.save()
         return post
@@ -31,13 +31,13 @@ class BlogService {
         if(!post){
             throw ApiError.BadRequest('Пост не найден')
         }
-        const hasView = await post.wasRead.find((id)=> id=== userId)
+        const hasView = await post.viewUsers.find((id)=> id=== userId)
 
         if(hasView){
             return post
         }
 
-       PostModel.findOneAndUpdate({_id: postId,},{$inc:{views: 1}, $push: {wasRead: userId}},{returnDocument: 'after'},
+       PostModel.findOneAndUpdate({_id: postId,},{$inc:{views: 1}, $push: {viewUsers: userId}},{returnDocument: 'after'},
             (err,doc)=>{
             if(err){
                 throw ApiError.BadRequest('Не удалось вернуть пост')
@@ -49,22 +49,23 @@ class BlogService {
 
             return doc
             })
+        const updatedPost = await PostModel.findOne({_id: postId})
+        return updatedPost
 
     }
 
-    async likePost(userId, postId){
+    async likePost(postId, user){
         const post = await PostModel.findById({_id: postId})
-        const user = await UserModel.findById({_id: userId})
-        let likesCount
 
         if(!post){
             throw ApiError.BadRequest('Не удалось вернуть пост')
         }
-        const hasLiked = user.likedPosts.find((id)=> id=== postId)
+        const hasLiked = post.likeUsers.find((id)=> id=== user.id)
 
-        // Если у юзера в списке понравившихся постов найден пост из запроса, пост удаляется из списка, и кол-во лайков декрементируется на 1
+        // Если у поста в списке лайкнувших юзеров найден юзер из запроса, юзер удаляется из списка, и кол-во лайков декрементируется на 1
         if(hasLiked){
-           PostModel.findOneAndUpdate({_id: postId},{$inc:{likes: -1}},{returnDocument: 'after'},
+            const postLikesFilter = post.likeUsers.filter((users)=> users !== user.id)
+           PostModel.findOneAndUpdate({_id: postId},{$inc:{likes: -1}, $set:{likeUsers: postLikesFilter}},{returnDocument: 'after'},
                 (err,doc)=>{
                     if(err){
                         throw ApiError.BadRequest('Не удалось вернуть пост')
@@ -73,25 +74,16 @@ class BlogService {
                     if(!doc){
                         throw ApiError.BadRequest('Пост не найден')
                     }
+                    return doc
                 })
-            const userWithoutThisPost = user.likedPosts.filter((post)=> post!== postId)
 
-            UserModel.findOneAndUpdate({_id: userId},{$set: {likedPosts: userWithoutThisPost}},{returnDocument: 'after'},
-                (err,doc)=>{
-                    if(err){
-                        throw ApiError.BadRequest('Не удалось вернуть пост')
-                    }
-
-                    if(!doc){
-                        throw ApiError.BadRequest('Пост не найден')
-                    }
-                })
-            likesCount = post.likes - 1
-            return {postId ,likes: likesCount, isLiked: false}
+            post.likeUsers = postLikesFilter
+            post.likes= post.likes-1
+            return post
         }
 
-        // Если у юзера в списке понравившихся постов не найден пост из запроса, пост добавляется в  список, и кол-во лайков инкрементируется на 1
-        PostModel.findOneAndUpdate({_id: postId,},{$inc:{likes: 1}, $push: {wasRead: userId}},{returnDocument: 'after'},
+        // Если у поста в списке лайкнувших юзеров не найден юзер из запроса, юзер добавляется в список, и кол-во лайков инкрементируется на 1
+        PostModel.findOneAndUpdate({_id: postId},{$inc:{likes: 1}, $push: {likeUsers: user.id}},{returnDocument: 'after'},
             (err,doc)=>{
             if(err){
                 throw ApiError.BadRequest('Не удалось вернуть пост')
@@ -100,20 +92,12 @@ class BlogService {
             if(!doc){
                 throw ApiError.BadRequest('Пост не найден')
             }
+            return doc
             })
 
-       UserModel.findOneAndUpdate({_id: userId,},{$push:{likedPosts:postId},},{returnDocument: 'after'},
-            (err,doc)=>{
-                if(err){
-                    throw ApiError.BadRequest('Не удалось поставить лайк')
-                }
-
-                if(!doc){
-                    throw ApiError.BadRequest('Лайк не найден')
-                }
-            })
-        likesCount = post.likes + 1
-        return {postId ,likes: likesCount, isLiked: true}
+        post.likeUsers = [...post.likeUsers, user.id]
+        post.likes= post.likes+1
+        return post
 
 
     }

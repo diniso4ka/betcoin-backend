@@ -5,6 +5,7 @@ const blogController = require('../controllers/blog-controller')
 
 const authMiddleware = require('../middlewares/auth-middleware')
 const authorMiddleware = require('../middlewares/author-middleware')
+const activatedMiddleware = require('../middlewares/activated-middleware')
 
 const router = new Router()
 
@@ -14,17 +15,16 @@ router.post('/auth/login',userController.login)
 router.post('/auth/logout',userController.logout)
 router.get('/auth/activate/:link',userController.activate)
 router.get('/auth/refresh',userController.refresh)
-router.get('/users',userController.getUsers)
 
 
 // Блог
 router.get('/blog/posts',blogController.getAllPosts)
-router.get('/blog/:postId', authMiddleware,authorMiddleware, blogController.getOnePost)
-router.post('/blog/create', authMiddleware, blogController.createPost)
-router.delete('/blog/:postId', authMiddleware, authorMiddleware, blogController.deletePost)
-router.patch('/blog/:postId/update', authMiddleware, authorMiddleware, blogController.updatePost)
-router.patch('/blog/report/:postId', authMiddleware, blogController.reportPost)
-router.patch('/blog/like/:postId', authMiddleware, blogController.likePost)
+router.get('/blog/:postId', authMiddleware, authorMiddleware, blogController.getOnePost)
+router.post('/blog/create', authMiddleware, activatedMiddleware, blogController.createPost)
+router.delete('/blog/:postId', authMiddleware, activatedMiddleware, authorMiddleware, blogController.deletePost)
+router.patch('/blog/:postId/update', authMiddleware, activatedMiddleware, authorMiddleware, blogController.updatePost)
+router.patch('/blog/report/:postId', authMiddleware, activatedMiddleware, blogController.reportPost)
+router.patch('/blog/like/:postId', authMiddleware, activatedMiddleware, blogController.likePost)
 
 
 module.exports= router

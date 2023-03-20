@@ -45,11 +45,11 @@ class UserService {
             user = loginByUsername
         }
         if(!user){
-            throw ApiError.BadRequest(400,'Пользователь не найден')
+            throw ApiError.NotFound('Пользователь не найден')
         }
         const isPassEquals = bcrypt.compare(password, user.password)
         if(!isPassEquals){
-            throw ApiError.BadRequest(400,`Неверный пароль`)
+            throw ApiError.BadRequest(`Неверный пароль`)
         }
         const userDto = new UserDto(user)
         const tokens = tokenService.generateTokens({...userDto})
@@ -70,7 +70,7 @@ class UserService {
     async activate(activationLink){
         const user = await UserModel.findOne({activationLink})
         if(!user){
-            throw ApiError.BadRequest(400,'Неккоректная ссылка активации')
+            throw ApiError.BadRequest('Неккоректная ссылка активации')
         }
         user.isActivated = true
         await user.save()
