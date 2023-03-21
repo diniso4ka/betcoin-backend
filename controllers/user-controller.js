@@ -19,7 +19,7 @@ class UserController {
             const {login, password}= req.body
             const userData = await userService.login(login, password)
 
-            res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+            res.status(200).cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
             return res.json(userData)
         }catch (err){
             next(err)
@@ -43,7 +43,7 @@ class UserController {
             const userData = await userService.refresh(refreshToken)
 
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
-            return res.json(userData)
+            return res.status(200).json(userData)
         }catch (err){
             next(err)
         }
@@ -55,7 +55,29 @@ class UserController {
             await userService.activate(activationLink)
 
 
-            return res.redirect(process.env.CLIENT_URL)
+            return res.status(200).redirect(process.env.CLIENT_URL)
+        }catch (err){
+            next(err)
+        }
+    }
+
+    async getAccessLink(req, res, next){
+        try {
+            const { email } = req.body
+            const userEmail =  await userService.getAccessLink(email)
+
+            return res.status(200).json(userEmail)
+        }catch (err){
+            next(err)
+        }
+    }
+
+    async getAccess(req, res, next){
+        try {
+            const { email } = req.body
+            const userEmail =  await userService.getAccessLink(email)
+
+            return res.status(200).json(userEmail)
         }catch (err){
             next(err)
         }

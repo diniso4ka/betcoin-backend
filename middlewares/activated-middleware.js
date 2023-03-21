@@ -4,11 +4,11 @@ module.exports = async function (req,res,next){
     try{
         const userIsActivated = req.user.isActivated
         if(!userIsActivated){
-            return next(ApiError.Forbidden())
+            return next(ApiError.Forbidden('Недостаточно прав'))
         }
 
         next()
     }catch (err){
-        return next(ApiError.Forbidden())
+        return next(ApiError.Forbidden('Недостаточно прав'))
     }
 }

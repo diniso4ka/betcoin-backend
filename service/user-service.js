@@ -8,6 +8,7 @@ const mailService = require('./mail-service')
 const tokenService = require('./token-service')
 const UserDto = require('../dtos/user-dto')
 const ApiError = require('../exceptions/api-error')
+const ROLES = require('../utils/constants/roles')
 
 class UserService {
     async registration(email, username, password){
@@ -73,6 +74,7 @@ class UserService {
             throw ApiError.BadRequest('Неккоректная ссылка активации')
         }
         user.isActivated = true
+        user.role = ROLES.PLAYER
         await user.save()
     }
 
@@ -95,6 +97,25 @@ class UserService {
         return {
             ...tokens,
             user: {...userDto}
+        }
+    }
+
+    async getAccessLink(email){
+        if(!email){
+            throw ApiError.BadRequest('Введите почту')
+        }
+        const userData = await UserModel.findOne({email})
+
+        if(!userData){
+            throw ApiError.BadRequest('Пользователь не найден')
+        }
+        // `${process.env.API_URL}/accesslink/
+        const accessLink = uuid.v4()
+        userData.accessLink = accessLink
+        await userData.save()
+        await mailService.sendAccessLink(email, `${process.env.API_URL}/auth/accesslink/${accessLink}`)
+        return {
+            email
         }
     }
 

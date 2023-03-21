@@ -1,6 +1,5 @@
 const blogService = require('../service/blog-service')
 const ApiError = require('../exceptions/api-error')
-const { } = require('mongoose')
 
 module.exports = async function (req,res,next){
     try{
@@ -17,10 +16,10 @@ module.exports = async function (req,res,next){
         }
 
         if(post.user.toString() !== userId){
-            return next(ApiError.BadRequest('Недостаточно прав'))
+            return next(ApiError.Forbidden('Недостаточно прав'))
         }
         next()
     }catch (err){
-        return next(ApiError.Forbidden())
+        return next(ApiError.Forbidden('Недостаточно прав'))
     }
 }

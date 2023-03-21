@@ -28,6 +28,22 @@ class MailService {
             `
         })
     }
+
+    async sendAccessLink(to, link){
+        await this.transporter.sendMail({
+            from: process.env.SMTP_USER,
+            to,
+            subject: 'Ссылка для восстановления пароля на '+ process.env.API_URL,
+            text:'',
+            html:
+                `
+            <div>
+                <h1>Для доступа перейдите по ссылке</h1>
+                <a href=${link}>${link}</a>
+            </div>
+            `
+        })
+    }
 }
 
 module.exports = new MailService()
