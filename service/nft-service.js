@@ -121,7 +121,6 @@ class UserService {
 		if (!userData) {
 			throw ApiError.BadRequest('Пользователь не найден');
 		}
-		// `${process.env.API_URL}/accesslink/
 		const accessLink = uuid.v4();
 		userData.accessLink = accessLink;
 		await userData.save();
