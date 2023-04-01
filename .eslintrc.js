@@ -6,12 +6,7 @@ module.exports = {
 	globals: {
 		NodeJS: true,
 	},
-	extends: [
-		'eslint:recommended',
-		'plugin:prettier/recommended',
-		'prettier',
-		'plugin:import/recommended',
-	],
+	extends: ['eslint:recommended', 'plugin:prettier/recommended', 'prettier'],
 	settings: {
 		'import/extensions': ['.js'],
 	},
@@ -24,27 +19,5 @@ module.exports = {
 		'import/no-named-as-default': 'off',
 		'no-debugger': 'warn',
 		'quotes': ['error', 'single'],
-		'simple-import-sort/imports': [
-			'error',
-			{
-				groups: [
-					//Absolute imports (path from 'path')
-					['^\\w+$'],
-					// Packages. react related packages come first.
-					['^@?\\w'],
-					// Internal packages.
-					['(components|modules|widgets|utils)(/.*|$)'],
-					// Side effect imports.
-					['^\\u0000'],
-					// Parent imports. Put .. last.
-					['^\\.\\.(?!/?$)', '^\\.\\./?$', '^\\.(?!/?$)'],
-					// Assets
-					['^shared\\/assets.+'],
-				],
-			},
-		],
-		'import/first': 'warn',
-		'import/newline-after-import': 'warn',
-		'import/no-duplicates': 'warn',
 	},
 };

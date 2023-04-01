@@ -20,8 +20,8 @@ router.post('/auth/login', userController.login);
 router.post('/auth/logout', userController.logout);
 router.get('/auth/activate/:link', userController.activate);
 router.get('/auth/refresh', userController.refresh);
-router.get('/auth/access', userController.getAccessLink);
 router.get('/auth/accesslink/:link', userController.getAccess);
+router.post('/auth/access', userController.getAccessLink);
 
 // Блог
 router.get('/blog/posts', blogController.getAllPosts);

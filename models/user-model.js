@@ -6,6 +6,7 @@ const UserSchema = new Schema({
 	username: { type: String, unique: true, required: true },
 	password: { type: String, required: true },
 	role: { type: String, default: ROLES.GUEST },
+	balance: { type: Number, default: 0 },
 	isActivated: { type: Boolean, default: false },
 	activationLink: { type: String },
 	accessLink: { type: String, default: '' },

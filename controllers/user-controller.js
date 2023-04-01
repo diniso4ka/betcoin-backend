@@ -1,4 +1,5 @@
 const userService = require('../service/user-service');
+const refreshTokenInCookie = require('../utils/helpers/refreshTokenInCookie');
 
 class UserController {
 	async registration(req, res, next) {
@@ -10,10 +11,7 @@ class UserController {
 				password,
 			);
 
-			res.cookie('refreshToken', userData.refreshToken, {
-				maxAge: 30 * 24 * 60 * 60 * 1000,
-				httpOnly: true,
-			});
+			refreshTokenInCookie(res, userData);
 			return res.json(userData);
 		} catch (err) {
 			next(err);
@@ -25,10 +23,7 @@ class UserController {
 			const { login, password } = req.body;
 			const userData = await userService.login(login, password);
 
-			res.status(200).cookie('refreshToken', userData.refreshToken, {
-				maxAge: 30 * 24 * 60 * 60 * 1000,
-				httpOnly: true,
-			});
+			refreshTokenInCookie(res, userData);
 			return res.json(userData);
 		} catch (err) {
 			next(err);
@@ -40,7 +35,7 @@ class UserController {
 			const { refreshToken } = req.cookies;
 			const token = await userService.logout(refreshToken);
 			res.clearCookie('refreshToken');
-			return res.status(200).json({ token });
+			return res.json({ token });
 		} catch (err) {
 			next(err);
 		}
@@ -51,11 +46,8 @@ class UserController {
 			const { refreshToken } = req.cookies;
 			const userData = await userService.refresh(refreshToken);
 
-			res.cookie('refreshToken', userData.refreshToken, {
-				maxAge: 30 * 24 * 60 * 60 * 1000,
-				httpOnly: true,
-			});
-			return res.status(200).json(userData);
+			refreshTokenInCookie(res, userData);
+			return res.json(userData);
 		} catch (err) {
 			next(err);
 		}
@@ -85,10 +77,13 @@ class UserController {
 
 	async getAccess(req, res, next) {
 		try {
-			const { email } = req.body;
-			const userEmail = await userService.getAccessLink(email);
+			const accessLink = req.params.link;
+			const userData = await userService.getAccess(accessLink);
 
-			return res.status(200).json(userEmail);
+			refreshTokenInCookie(res, userData);
+			return res
+				.json(userData)
+				.redirect(`${process.env.CLIENT_URL}/profile/settings`); //TODO Добавить константы юрлов
 		} catch (err) {
 			next(err);
 		}

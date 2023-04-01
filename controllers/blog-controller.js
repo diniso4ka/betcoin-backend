@@ -43,19 +43,21 @@ class BlogController {
 		}
 	}
 
-	// async updatePost(req, res, next) {
-	// 	try {
-	// 	} catch (err) {
-	// 		next(err);
-	// 	}
-	// }
-	//
-	// async deletePost(req, res, next) {
-	// 	try {
-	// 	} catch (err) {
-	// 		next(err);
-	// 	}
-	// }
+	async updatePost(req, res, next) {
+		try {
+			console.log('NONE');
+		} catch (err) {
+			next(err);
+		}
+	}
+
+	async deletePost(req, res, next) {
+		try {
+			console.log('NONE');
+		} catch (err) {
+			next(err);
+		}
+	}
 
 	async likePost(req, res, next) {
 		try {
@@ -70,12 +72,13 @@ class BlogController {
 		}
 	}
 
-	// async reportPost(req, res, next) {
-	// 	try {
-	// 	} catch (err) {
-	// 		next(err);
-	// 	}
-	// }
+	async reportPost(req, res, next) {
+		try {
+			console.log('NONE');
+		} catch (err) {
+			next(err);
+		}
+	}
 }
 
 module.exports = new BlogController();

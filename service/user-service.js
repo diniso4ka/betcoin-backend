@@ -61,7 +61,8 @@ class UserService {
 		if (!user) {
 			throw ApiError.NotFound('Пользователь не найден');
 		}
-		const isPassEquals = bcrypt.compare(password, user.password);
+		const isPassEquals = await bcrypt.compare(password, user.password);
+
 		if (!isPassEquals) {
 			throw ApiError.BadRequest('Неверный пароль');
 		}
@@ -121,7 +122,7 @@ class UserService {
 		if (!userData) {
 			throw ApiError.BadRequest('Пользователь не найден');
 		}
-		// `${process.env.API_URL}/accesslink/
+
 		const accessLink = uuid.v4();
 		userData.accessLink = accessLink;
 		await userData.save();
@@ -131,6 +132,27 @@ class UserService {
 		);
 		return {
 			email,
+		};
+	}
+
+	async getAccess(accessLink) {
+		if (!accessLink) {
+			throw ApiError.BadRequest('Неверная ссылка');
+		}
+
+		const userData = await UserModel.findOne({ accessLink });
+		if (!userData) {
+			throw ApiError.BadRequest('Неверная ссылка');
+		}
+		userData.accessLink = null;
+		await userData.save();
+		const userDto = new UserDto(userData);
+		const tokens = tokenService.generateTokens({ ...userDto });
+		await tokenService.saveToken(userDto.id, tokens.refreshToken);
+
+		return {
+			...tokens,
+			user: { ...userDto },
 		};
 	}
 }
