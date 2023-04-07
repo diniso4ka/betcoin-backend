@@ -1,4 +1,4 @@
-const blogService = require('../service/blog-service');
+const blogService = require('./services/blog-service');
 
 class BlogController {
 	async getAllPosts(req, res, next) {
@@ -14,8 +14,8 @@ class BlogController {
 	async getOnePost(req, res, next) {
 		try {
 			const postId = req.params.postId;
-			const userId = req.user.id;
-			const post = await blogService.getOne(postId, userId);
+			const { id } = req.user;
+			const post = await blogService.getOne(postId, id);
 
 			return res.json(post);
 		} catch (err) {
@@ -26,15 +26,14 @@ class BlogController {
 	async createPost(req, res, next) {
 		try {
 			const { title, subtitle, img, tags, text } = req.body;
-			const userId = req.user.id;
-
+			const { id } = req.user;
 			const post = await blogService.createPost(
 				title,
 				subtitle,
 				img,
 				tags,
 				text,
-				userId,
+				id,
 			);
 
 			return res.json(post);
@@ -62,9 +61,9 @@ class BlogController {
 	async likePost(req, res, next) {
 		try {
 			const postId = req.params.postId;
-			const user = req.user;
-			await blogService.getOne(postId, user.id);
-			const post = await blogService.likePost(postId, user);
+			const { id } = req.user;
+			await blogService.getOne(postId, id);
+			const post = await blogService.likePost(postId, id);
 
 			return res.json(post);
 		} catch (err) {

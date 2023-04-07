@@ -1,5 +1,5 @@
 const { Schema, model } = require('mongoose');
-const ROLES = require('../utils/constants/roles');
+const ROLES = require('../../../utils/constants/roles');
 
 const UserSchema = new Schema({
 	email: { type: String, unique: true, required: true },

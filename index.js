@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const ws = require('ws');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -27,4 +28,13 @@ async function start() {
 	}
 }
 
+// const wss = new ws.WebSocketServer(
+// 	{
+// 		port: 4000,
+// 	},
+// 	() => console.log('WS server started on PORT = 4000'),
+// );
+//
+// wss.on('connection', function connection(ws) {});
+//
 start();

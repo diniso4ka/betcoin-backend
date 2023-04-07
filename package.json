@@ -22,7 +22,8 @@
     "mongodb": "^5.1.0",
     "mongoose": "^6.10.2",
     "nodemailer": "^6.9.1",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "ws": "^8.13.0"
   },
   "devDependencies": {
     "eslint": "^8.37.0",

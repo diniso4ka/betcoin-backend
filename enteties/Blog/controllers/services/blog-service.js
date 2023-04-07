@@ -1,6 +1,6 @@
-const PostModel = require('../models/post-model');
-const PostDto = require('../dtos/post-dto');
-const ApiError = require('../exceptions/api-error');
+const PostModel = require('../../models/post-model');
+const PostDto = require('../../../../dtos/post-dto');
+const ApiError = require('../../../../exceptions/api-error');
 
 class BlogService {
 	async getAll() {
@@ -11,14 +11,14 @@ class BlogService {
 		return postsData;
 	}
 
-	async createPost(title, subtitle, img, tags, text, userId) {
+	async createPost(title, subtitle, img, tags, text, id) {
 		const doc = new PostModel({
 			title,
 			subtitle,
 			text,
 			tags,
 			img,
-			user: userId,
+			user: id,
 		});
 		const post = await doc.save();
 		return post;
@@ -26,9 +26,11 @@ class BlogService {
 
 	async getOne(postId, userId) {
 		const post = await PostModel.findOne({ _id: postId });
+
 		if (!post) {
 			throw ApiError.BadRequest('Пост не найден');
 		}
+
 		const hasView = await post.viewUsers.find((id) => id === userId);
 
 		if (hasView) {
@@ -55,18 +57,17 @@ class BlogService {
 		return updatedPost;
 	}
 
-	async likePost(postId, user) {
+	async likePost(postId, userId) {
 		const post = await PostModel.findById({ _id: postId });
-
 		if (!post) {
 			throw ApiError.BadRequest('Не удалось вернуть пост');
 		}
-		const hasLiked = post.likeUsers.find((id) => id === user.id);
+		const hasLiked = post.likeUsers.find((id) => id === userId);
 
 		// Если у поста в списке лайкнувших юзеров найден юзер из запроса, юзер удаляется из списка, и кол-во лайков декрементируется на 1
 		if (hasLiked) {
 			const postLikesFilter = post.likeUsers.filter(
-				(users) => users !== user.id,
+				(users) => users !== userId,
 			);
 			PostModel.findOneAndUpdate(
 				{ _id: postId },
@@ -92,7 +93,7 @@ class BlogService {
 		// Если у поста в списке лайкнувших юзеров не найден юзер из запроса, юзер добавляется в список, и кол-во лайков инкрементируется на 1
 		PostModel.findOneAndUpdate(
 			{ _id: postId },
-			{ $inc: { likes: 1 }, $push: { likeUsers: user.id } },
+			{ $inc: { likes: 1 }, $push: { likeUsers: userId } },
 			{ returnDocument: 'after' },
 			(err, doc) => {
 				if (err) {
@@ -106,7 +107,7 @@ class BlogService {
 			},
 		);
 
-		post.likeUsers = [...post.likeUsers, user.id];
+		post.likeUsers = [...post.likeUsers, userId];
 		post.likes = post.likes + 1;
 		return post;
 	}

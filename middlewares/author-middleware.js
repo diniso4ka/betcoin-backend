@@ -1,4 +1,4 @@
-const blogService = require('../service/blog-service');
+const blogService = require('../enteties/Blog/controllers/services/blog-service');
 const ApiError = require('../exceptions/api-error');
 
 module.exports = async function (req, res, next) {

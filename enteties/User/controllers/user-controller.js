@@ -1,5 +1,5 @@
-const userService = require('../service/user-service');
-const refreshTokenInCookie = require('../utils/helpers/refreshTokenInCookie');
+const userService = require('./services/user-service');
+const refreshTokenInCookie = require('../../../utils/helpers/refreshTokenInCookie');
 
 class UserController {
 	async registration(req, res, next) {
@@ -58,7 +58,10 @@ class UserController {
 			const activationLink = req.params.link;
 			await userService.activate(activationLink);
 
-			return res.status(200).redirect(process.env.CLIENT_URL);
+			return res
+				.json({ message: 'Аккаунт активирован' })
+				.status(200)
+				.redirect(process.env.CLIENT_URL);
 		} catch (err) {
 			next(err);
 		}

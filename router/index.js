@@ -1,7 +1,8 @@
 const Router = require('express').Router;
 
-const userController = require('../controllers/user-controller');
-const blogController = require('../controllers/blog-controller');
+const userController = require('../enteties/User/controllers/user-controller');
+const blogController = require('../enteties/Blog/controllers/blog-controller');
+const commentController = require('../enteties/Comment/controllers/comment-controller');
 
 const authMiddleware = require('../middlewares/auth-middleware');
 const authorMiddleware = require('../middlewares/author-middleware');
@@ -25,12 +26,7 @@ router.post('/auth/access', userController.getAccessLink);
 
 // Блог
 router.get('/blog/posts', blogController.getAllPosts);
-router.get(
-	'/blog/:postId',
-	authMiddleware,
-	authorMiddleware,
-	blogController.getOnePost,
-);
+router.get('/blog/:postId', authMiddleware, blogController.getOnePost);
 router.post(
 	'/blog/create',
 	authMiddleware,
@@ -62,6 +58,20 @@ router.patch(
 	authMiddleware,
 	activatedMiddleware,
 	blogController.likePost,
+);
+
+//Комментарии
+router.post(
+	'/blog/:postId/comment',
+	authMiddleware,
+	activatedMiddleware,
+	commentController.createComment,
+);
+router.patch(
+	'/blog/:postId/comment',
+	authMiddleware,
+	activatedMiddleware,
+	commentController.likeComment,
 );
 
 module.exports = router;

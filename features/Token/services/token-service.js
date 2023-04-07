@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
 const TokenModel = require('../models/token-model');
+const UserModel = require('../../../enteties/User/models/user-model');
+const ApiError = require('../../../exceptions/api-error');
 
 class TokenService {
 	generateTokens(payload) {
@@ -58,6 +60,14 @@ class TokenService {
 		} catch (err) {
 			return null;
 		}
+	}
+
+	async findUserByToken(accessToken) {
+		const user = await UserModel.findOne({ accessToken });
+		if (!user) {
+			throw ApiError.UnauthorizedError();
+		}
+		return user;
 	}
 
 	async findToken(refreshToken) {

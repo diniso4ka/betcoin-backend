@@ -7,16 +7,12 @@ module.exports = {
 		NodeJS: true,
 	},
 	extends: ['eslint:recommended', 'plugin:prettier/recommended', 'prettier'],
-	settings: {
-		'import/extensions': ['.js'],
-	},
 	parserOptions: {
 		ecmaVersion: 'latest',
 		sourceType: 'module',
 	},
-	plugins: ['prettier', 'import', 'simple-import-sort'],
+	plugins: ['prettier'],
 	rules: {
-		'import/no-named-as-default': 'off',
 		'no-debugger': 'warn',
 		'quotes': ['error', 'single'],
 	},
