@@ -116,6 +116,42 @@ class BlogService {
 		const post = await PostModel.findOne({ _id: postId });
 		return new PostDto(post);
 	}
+
+	async commentCounterIncrement(postId) {
+		PostModel.findOneAndUpdate(
+			{ _id: postId },
+			{ $inc: { comments: 1 } },
+			{ returnDocument: 'after' },
+			(err, doc) => {
+				if (err) {
+					throw ApiError.BadRequest('Не удалось вернуть пост');
+				}
+
+				if (!doc) {
+					throw ApiError.BadRequest('Пост не найден');
+				}
+				return doc;
+			},
+		);
+	}
+
+	async commentCounterDecrement(postId) {
+		PostModel.findOneAndUpdate(
+			{ _id: postId },
+			{ $inc: { comments: -1 } },
+			{ returnDocument: 'after' },
+			(err, doc) => {
+				if (err) {
+					throw ApiError.BadRequest('Не удалось вернуть пост');
+				}
+
+				if (!doc) {
+					throw ApiError.BadRequest('Пост не найден');
+				}
+				return doc;
+			},
+		);
+	}
 }
 
 module.exports = new BlogService();

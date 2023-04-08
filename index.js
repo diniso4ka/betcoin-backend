@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const ws = require('ws');
+const ws = require('mongodb');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -27,7 +27,7 @@ async function start() {
 		console.log(err);
 	}
 }
-
+ws.runCommand();
 // const wss = new ws.WebSocketServer(
 // 	{
 // 		port: 4000,

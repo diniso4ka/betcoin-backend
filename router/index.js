@@ -61,6 +61,7 @@ router.patch(
 );
 
 //Комментарии
+router.get('/blog/:postId/comments', commentController.getAllComments);
 router.post(
 	'/blog/:postId/comment',
 	authMiddleware,

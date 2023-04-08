@@ -10,6 +10,7 @@ const PostSchema = new Schema(
 		text: { type: Array, required: true },
 		views: { type: Number, default: 0 },
 		likes: { type: Number, default: 0 },
+		comments: { type: Number, default: 0 },
 		viewUsers: { type: Array, default: [] },
 		likeUsers: { type: Array, default: [] },
 	},
