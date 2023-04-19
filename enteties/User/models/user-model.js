@@ -10,6 +10,7 @@ const UserSchema = new Schema({
 	isActivated: { type: Boolean, default: false },
 	activationLink: { type: String },
 	accessLink: { type: String, default: '' },
+	isBanned: { type: Schema.Types.ObjectId, ref: 'BannedUser' },
 });
 
 module.exports = model('User', UserSchema);

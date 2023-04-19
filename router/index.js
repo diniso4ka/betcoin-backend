@@ -4,9 +4,12 @@ const userController = require('../enteties/User/controllers/user-controller');
 const blogController = require('../enteties/Blog/controllers/blog-controller');
 const commentController = require('../enteties/Comment/controllers/comment-controller');
 
+const moderatorController = require('../features/Moderator/controllers/moderation-controller');
+
 const authMiddleware = require('../middlewares/auth-middleware');
 const authorMiddleware = require('../middlewares/author-middleware');
 const activatedMiddleware = require('../middlewares/activated-middleware');
+const moderatorMiddleware = require('../middlewares/moderator-middleware');
 const registerValidation = require('../middlewares/registerValidation-middleware');
 
 const router = new Router();
@@ -73,6 +76,20 @@ router.patch(
 	authMiddleware,
 	activatedMiddleware,
 	commentController.likeComment,
+);
+
+//Модерация
+router.delete(
+	'/admin/users/delete',
+	authMiddleware,
+	moderatorMiddleware,
+	moderatorController.deleteUser,
+);
+router.post(
+	'/admin/users/ban',
+	authMiddleware,
+	moderatorMiddleware,
+	moderatorController.banUser,
 );
 
 module.exports = router;

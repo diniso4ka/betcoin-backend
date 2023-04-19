@@ -1,6 +1,11 @@
 const blogService = require('../enteties/Blog/controllers/services/blog-service');
 const ApiError = require('../exceptions/api-error');
 
+const {
+	USER_ROLE_ADMIN,
+	USER_ROLE_MODERATOR,
+} = require('../utils/constants/roles');
+
 module.exports = async function (req, res, next) {
 	try {
 		const postId = req.params.postId;
@@ -11,7 +16,7 @@ module.exports = async function (req, res, next) {
 			return next(ApiError.BadRequest('Пост не найден'));
 		}
 
-		if (userRole === 'admin' || userRole === 'moderator') {
+		if (userRole === USER_ROLE_ADMIN || userRole === USER_ROLE_MODERATOR) {
 			next();
 		}
 

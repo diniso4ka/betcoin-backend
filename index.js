@@ -27,7 +27,6 @@ async function start() {
 		console.log(err);
 	}
 }
-ws.runCommand();
 // const wss = new ws.WebSocketServer(
 // 	{
 // 		port: 4000,
